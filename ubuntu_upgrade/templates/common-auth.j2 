@@ -1,0 +1,21 @@
+#
+# /etc/pam.d/common-auth - authentication settings common to all services
+#
+####################################
+# This file is modified by Ansible.
+# Do not manully edit.
+####################################
+# This file is responsible for authenticating a users credentails
+auth    required   pam_faillock.so  onerr=fail audit silent deny=3 unlock_time=1800
+
+
+auth    [success=2 default=ignore]      pam_unix.so nullok
+auth    [success=1 default=ignore]      pam_ldap.so minimum_uid=1000 use_first_pass
+auth    requisite                       pam_deny.so
+# prime the stack with a positive return value if there isn't one already;
+# this avoids us returning an error just because nothing sets a success code
+# since the modules above will each just jump around
+auth    required                        pam_permit.so
+# and here are more per-package modules (the "Additional" block)
+auth    optional                        pam_cap.so
+# end of pam-auth-update config

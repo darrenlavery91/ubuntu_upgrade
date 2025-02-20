@@ -1,0 +1,15 @@
+#
+# /etc/pam.d/common-account - authorization settings common to all services
+#
+####################################
+# This file is modified by Ansible.
+# Do not manully edit.
+####################################
+# This file is used to contrally control access policies for accounts
+
+account [success=1 new_authtok_reqd=done default=ignore]        pam_unix.so
+account requisite                       pam_deny.so
+account required                        pam_permit.so
+account [success=ok new_authtok_reqd=done ignore=ignore user_unknown=ignore authinfo_unavail=ignore default=bad]       pam_ldap.so minimum_uid=1000
+account required        pam_faillock.so
+# end of pam-auth-update config

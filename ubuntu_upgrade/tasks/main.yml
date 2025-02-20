@@ -1,0 +1,127 @@
+---
+# I changed all the docker stuff below to no longer be Firefly specific
+- name: Check if Docker is installed
+  ansible.builtin.command: docker --version
+  register: docker_installed
+  ignore_errors: true
+
+- name: Do Docker stuff if it exists
+  when: docker_installed.rc == 0
+  block:
+    # Gets a list of containers running on a server.
+    - name: List running containers
+      pytoccaz.docker.docker_ps:
+      register: containers_list
+
+    # Filters out only the container names
+    - name: Extract image names
+      ansible.builtin.set_fact:
+        image_names: "{{ containers_list.results | map(attribute='names') | list }}"
+      when: docker_installed.rc == 0
+
+    - name: Stopping container {{ item }}
+      ansible.builtin.docker_container:
+        name: "{{ item }}"
+        state: stopped
+      with_items: "{{ image_names }}"
+      ignore_errors: true
+
+- name: Purge specific NVIDIA driver packages
+  ansible.builtin.apt:
+    name:
+      - nvidia-driver-*
+    state: absent
+    force: yes
+    allow_change_held_packages: yes
+  become: true
+  register: nvidia_removed
+  ignore_errors: true
+
+# Might be way easier to remove this file  and then reload the common tasks, will see how the deploy goes
+- name: Template pam settings for common-auth
+  ansible.builtin.template:
+    src: templates/common-auth.j2
+    dest: /etc/pam.d/common-auth
+    owner: root
+    group: root
+    mode: '0644'
+
+# Might be way easier to remove this file and then reload the common tasks, will see how the deploy goes
+- name: Template pam settings for common-account
+  ansible.builtin.template:
+    src: templates/common-account.j2
+    dest: /etc/pam.d/common-account
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: remove broken sources
+  ansible.builtin.file:
+    path: /etc/apt/sources.list.d/{{ item }}
+    state: absent
+  loop:
+    - repo_zabbix_com_zabbix_6_0_ubuntu.list
+    - deb_ocsinventory_ng_org_ubuntu.list
+
+- name: Update package cache
+  ansible.builtin.apt:
+    update_cache: true
+  become: true
+  ignore_errors: true
+
+- name: Fix broken dependencies
+  ansible.builtin.shell: |
+    export DEBIAN_FRONTEND=noninteractive
+    apt-get --fix-broken install -y
+  become: true
+  register: fix_broken_output
+  ignore_errors: true
+
+- name: Remove unused dependencies
+  ansible.builtin.apt:
+    autoremove: true
+  become: true
+
+- name: Print current version
+  ansible.builtin.debug:
+    msg: "Currently running {{ ansible_facts['distribution_version'] }}"
+
+- name: Upgrade from 20.04 to 22.04
+  ansible.builtin.include_tasks: upgrade_to_22.04.yaml
+  when: ansible_facts['distribution_version'] == '20.04'
+
+- name: Print current version
+  ansible.builtin.debug:
+    msg: "Currently running {{ ansible_facts['distribution_version'] }}"
+
+- name: Upgrade from 22.04 to 24.04
+  ansible.builtin.include_tasks: upgrade_to_24.04.yaml
+  when: ansible_facts['distribution_version'] == '22.04'
+
+- name: Print current version
+  ansible.builtin.debug:
+    msg: "Currently running {{ ansible_facts['distribution_version'] }}"
+
+- name: Fix broken dependencies
+  ansible.builtin.shell: |
+    export DEBIAN_FRONTEND=noninteractive
+    apt-get --fix-broken install -y
+  become: true
+  register: fix_broken_output
+  ignore_errors: true
+
+# This was needed after the above command    
+- name: Bypass interactive dpkg configure 
+  ansible.builtin.shell: | 
+    dpkg --configure -a --force-confdef
+
+- name: install systemd-resolved
+  ansible.builtin.apt:
+    name: systemd-resolved
+    state: present
+
+- name: enable and start service
+  ansible.builtin.service:
+    name: systemd-resolved
+    state: started
+    enabled: true

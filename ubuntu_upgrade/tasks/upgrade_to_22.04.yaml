@@ -1,0 +1,52 @@
+---
+# Run this first if on version24
+- name: Perform a dist-upgrade
+  ansible.builtin.apt:
+    upgrade: dist
+    update_cache: true
+  register: dist_upgrade
+
+#seems to need a reboot after dist-upgrade
+- name: Reboot with a long timeout
+  ansible.builtin.reboot:
+    reboot_timeout: 3600
+  when: dist_upgrade.changed
+
+- name: Set /etc/update-manager/release-upgrades to "lts"
+  ansible.builtin.lineinfile:
+    path: /etc/update-manager/release-upgrades
+    regexp: '^Prompt='
+    line: "Prompt=lts"
+
+- name: Upgrade Ubuntu with the do-release-upgrade tool
+  ansible.builtin.shell: |
+    do-release-upgrade -f DistUpgradeViewNonInteractive
+  async: 3600
+  poll: 0
+
+# This usually takes 8 to 10 minutes
+# If you are bored, you can check the logs on the host at /var/log/dist-upgrade/main.log
+- name: Check if the server is running Ubuntu 22.04
+  ansible.builtin.command: lsb_release -r
+  register: os_version
+  until: os_version.stdout.find('22.04') != -1
+  retries: 20
+  delay: 60
+  become: false # This is needed as sometimes become failes before gathering new facts
+  ignore_errors: true
+
+- name: Reboot with a long ass timeout just in case
+  ansible.builtin.reboot:
+    reboot_timeout: 3600
+
+- name: Refresh inventory
+  ansible.builtin.meta: refresh_inventory
+
+- name: Reset ssh connection
+  ansible.builtin.meta: reset_connection
+
+- name: Clear known Facts
+  ansible.builtin.meta: clear_facts
+
+- name: Gather facts
+  ansible.builtin.setup:

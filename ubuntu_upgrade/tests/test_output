@@ -1,0 +1,184 @@
+LAY [Check Ubuntu Version] *******************************************************************************************
+
+TASK [Gathering Facts] ************************************************************************************************
+[WARNING]: Platform linux on host dvcvisentff-test2.vodacom.vumacam.co.za is using the discovered Python interpreter
+at /usr/bin/python3.10, but future installation of another Python interpreter could change the meaning of that path.
+See https://docs.ansible.com/ansible-core/2.17/reference_appendices/interpreter_discovery.html for more information.
+ok: [dvcvisentff-test2.vodacom.vumacam.co.za]
+
+TASK [ubuntu_upgrade : Gracefully stop containers] ********************************************************************
+changed: [dvcvisentff-test2.vodacom.vumacam.co.za]
+
+TASK [ubuntu_upgrade : Print output of Docker down command] ***********************************************************
+ok: [dvcvisentff-test2.vodacom.vumacam.co.za] => {
+    "stop_result": {
+        "changed": true,
+        "cmd": [
+            "docker",
+            "compose",
+            "-f",
+            "/usr/local/vumacam/docker/isentry/docker-compose.yaml",
+            "down"
+        ],
+        "delta": "0:00:00.177796",
+        "end": "2024-11-07 12:24:13.884571",
+        "failed": false,
+        "msg": "",
+        "rc": 0,
+        "start": "2024-11-07 12:24:13.706775",
+        "stderr": "time=\"2024-11-07T12:24:13+02:00\" level=warning msg=\"/usr/local/vumacam/docker/isentry/docker-compose.yaml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion\"",
+        "stderr_lines": [
+            "time=\"2024-11-07T12:24:13+02:00\" level=warning msg=\"/usr/local/vumacam/docker/isentry/docker-compose.yaml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion\""
+        ],
+        "stdout": "",
+        "stdout_lines": []
+    }
+}
+
+TASK [ubuntu_upgrade : Purge specific NVIDIA driver packages] *********************************************************
+ok: [dvcvisentff-test2.vodacom.vumacam.co.za]
+
+TASK [ubuntu_upgrade : Update all packages to their latest version] ***************************************************
+ok: [dvcvisentff-test2.vodacom.vumacam.co.za]
+
+TASK [ubuntu_upgrade : Upgrade the OS (apt-get dist-upgrade)] *********************************************************
+ok: [dvcvisentff-test2.vodacom.vumacam.co.za]
+
+TASK [ubuntu_upgrade : Remove dependencies that are no longer required] ***********************************************
+ok: [dvcvisentff-test2.vodacom.vumacam.co.za]
+
+TASK [ubuntu_upgrade : Report if the host is running Ubuntu 22.02] ****************************************************
+ok: [dvcvisentff-test2.vodacom.vumacam.co.za] => {
+    "msg": "The host is NOT running Ubuntu 22.02. It is running 22.04."
+}
+
+TASK [ubuntu_upgrade : Run playbook to upgrade 22.04 to 24.04 (or latest)] ********************************************
+included: /home/darren.lavery@vumacam.co.za/itop_dynamic_inventory/Ansible/roles/ubuntu_upgrade/tasks/single_node_upgrade_test_2.yaml for dvcvisentff-test2.vodacom.vumacam.co.za
+
+TASK [ubuntu_upgrade : Ensure /etc/update-manager/release-upgrades is set to 'normal' or 'lts'] ***********************
+ok: [dvcvisentff-test2.vodacom.vumacam.co.za]
+
+TASK [ubuntu_upgrade : Verify the Prompt setting] *********************************************************************
+changed: [dvcvisentff-test2.vodacom.vumacam.co.za]
+
+TASK [ubuntu_upgrade : Print Prompt setting] **************************************************************************
+ok: [dvcvisentff-test2.vodacom.vumacam.co.za] => {
+    "msg": "# Default behavior for the release upgrader.\n\n[DEFAULT]\n# Default prompting and upgrade behavior, valid options:\n#\n#  never  - Never check for, or allow upgrading to, a new release.\n#  normal - Check to see if a new release is available.  If more than one new\n#           release is found, the release upgrader will attempt to upgrade to\n#           the supported release that immediately succeeds the\n#           currently-running release.\n#  lts    - Check to see if a new LTS release is available.  The upgrader\n#           will attempt to upgrade to the first LTS release available after\n#           the currently-running one.  Note that if this option is used and\n#           the currently-running release is not itself an LTS release the\n#           upgrader will assume prompt was meant to be normal.\nPrompt=lts"
+}
+
+TASK [ubuntu_upgrade : Upgrade Ubuntu with the do-release-upgrade tool] ***********************************************
+changed: [dvcvisentff-test2.vodacom.vumacam.co.za]
+
+TASK [ubuntu_upgrade : Print upgrade output] **************************************************************************
+ok: [dvcvisentff-test2.vodacom.vumacam.co.za] => {
+    "msg": "nvidia-driver-550\nPreconfiguring packages ...\r\nPreconfiguring packages ...\r\nPreconfiguring packages ...\r\n(Reading database ... \r(Reading database ... 5%\r(Reading database ... 10%\r(Reading database ... 15%\r(Reading database ... 20%\r(Reading database ... 25%\r(Reading database ... 30%\r(Reading database ... 35%\r(Reading database ... 40%\r(Reading database ... 45%\r(Reading database ... 50%\r(Reading database ... 55%\r(Reading database ... 60%\r(Reading database ... 65%\r(Reading database ... 70%\r(Reading database ... 75%\r(Reading database ... 80%\r(Reading database ... 85%\r(Reading database ... 90%\r(Reading database ... 95%\r(Reading database ... 100%\r(Reading database ... 132278 files and directories currently installed.)\r\nPreparing to unpack .../adduser_3.137ubuntu1_all.deb ...\r\nmoving unchanged adduser.conf to adduser.conf.update-old. New dpkg-conffile will come from the package.\r\nUnpacking adduser (3.137ubuntu1) over (3.118ubuntu5) ...\r\nSetting up adduser (3.137ubuntu1) ...\r\nInstalling new version of config file /etc/deluser.conf ...\r\n(Reading database ... \r(Reading database ... 5%\r(Reading database ... 10%\r(Reading database ... 15%\r(Reading database ... 20%\r(Reading database ... 25%\r(Reading database ... 30%\r(Reading database ... 35%\r(Reading database ... 40%\r(Reading database ... 45%\r(Reading database ... 50%\r(Reading database ... 55%\r(Reading database ... 60%\r(Reading database ... 65%\r(Reading database ... 70%\r(Reading database ... 75%\r(Reading database ... 80%\r(Reading database ... 85%\r(Reading database ... 90%\r(Reading database ... 95%\r(Reading database ... 100%\r(Reading database ... 132239 files and directories currently installed.)\r\nPreparing to unpack .../tzdata_2024a-3ubuntu1.1_all.deb ...\r\nUnpacking tzdata (2024a-3ubuntu1.1) over (2024a-0ubuntu0.22.04.1) ...\r\nSelecting previously unselected package tzdata-legacy.\r\nPreparing to unpack .../tzdata-legacy_2024a-3ubuntu1.1_all.deb ...\r\nUnpacking tzdata-legacy (2024a-3ubuntu1.1) ...\r\ndpkg: libhogweed6:amd64: dependency problems, but removing anyway as you requested:\r\n librtmp1:amd64 depends on libhogweed6.\r\n libgnutls30:amd64 depends on libhogweed6 (>= 3.6).\r\n\r\n(Reading database ... \r(Reading database ... 5%\r(Reading database ... 10%\r(Reading database ... 15%\r(Reading database ... 20%\r(Reading database ... 25%\r(Reading database ... 30%\r(Reading database ... 35%\r(Reading database ... 40%\r(Reading database ... 45%\r(Reading database ... 50%\r(Reading database ... 55%\r(Reading database ... 60%\r(Reading database ... 65%\r(Reading database ... 70%\r(Reading database ... 75%\r(Reading database ... 80%\r(Reading database ... 85%\r(Reading database ... 90%\r(Reading database ... 95%\r(Reading database ... 100%\r(Reading database ... 131614 files and directories currently installed.)\r\nRemoving libhogweed6:amd64 (3.7.3-1build2) ...\r\ndpkg: libnettle8:amd64: dependency problems, but removing anyway as you requested:\r\n librtmp1:amd64 depends on libnettle8.\r\n libgnutls30:amd64 depends on libnettle8 (>= 3.7~).\r\n libcurl3-gnutls:amd64 depends on libnettle8.\r\n libarchive13:amd64 depends on libnettle8.\r\n chrony depends on libnettle8.\r\n\r\nRemoving libnettle8:amd64 (3.7.3-1build2) ...\r\ndpkg: libgnutls30:amd64: dependency problems, but removing anyway as you requested:\r\n systemd depends on libgnutls30 (>= 3.7.2).\r\n ntfs-3g depends on libgnutls30 (>= 3.7.2).\r\n librtmp1:amd64 depends on libgnutls30 (>= 3.7.2).\r\n libldap-2.5-0:amd64 depends on libgnutls30 (>= 3.7.2).\r\n libjcat1:amd64 depends on libgnutls30 (>= 3.7.0).\r\n libcurl3-gnutls:amd64 depends on libgnutls30 (>= 3.7.2).\r\n libcups2:amd64 depends on libgnutls30 (>= 3.7.2).\r\n dirmngr depends on libgnutls30 (>= 3.7.2).\r\n chrony depends on libgnutls30 (>= 3.7.2).\r\n apt depends on libgnutls30 (>= 3.7.0).\r\n\r\nRemoving libgnutls30:amd64 (3.7.3-4ubuntu1.5) ...\r\nSelecting previously unselected package libnettle8t64:amd64.\r\n(Reading database ... \r(Reading database ... 5%\r(Reading database ... 10%\r(Reading database ... 15%\r(Reading database ... 20%\r(Reading database ... 25%\r(Reading database ... 30%\r(Reading database ... 35%\r(Reading database ... 40%\r(Reading database ... 45%\r(Reading database ... 50%\r(Reading database ... 55%\r(Reading database ... 60%\r(Reading database ... 65%\r(Reading database ... 70%\r(Reading database ... 75%\r(Reading database ... 80%\r(Reading database ... 85%\r(Reading database ... 90%\r(Reading database ... 95%\r(Reading database ... 100%\r(Reading database ... 131593 files and directories currently installed.)\r\nPreparing to unpack .../0-libnettle8t64_3.9.1-2.2build1.1_amd64.deb ...\r\nUnpacking libnettle8t64:amd64 (3.9.1-2.2build1.1) ...\r\nSelecting previously unselected package libhogweed6t64:amd64.\r\nPreparing to unpack .../1-libhogweed6t64_3.9.1-2.2build1.1_amd64.deb ...\r\nUnpacking libhogweed6t64:amd64 (3.9.1-2.2build1.1) ...\r\nPreparing to unpack .../2-libp11-kit0_0.25.3-4ubuntu2.1_amd64.deb ...\r\nUnpacking libp11-kit0:amd64 (0.25.3-4ubuntu2.1) over (0.24.0-6build1) ...\r\nSelecting previously unselected package libunistring5:amd64.\r\nPreparing to unpack .../3-libunistring5_1.1-2build1_amd64.deb ...\r\nUnpacking libunistring5:amd64 (1.1-2build1) ...\r\nSelecting previously unselected package libgnutls30t64:amd64.\r\nPreparing to unpack .../4-libgnutls30t64_3.8.3-1.1ubuntu3.2_amd64.deb .
+
+TASK [ubuntu_upgrade : Report if the host is not running Ubuntu 20.04] ************************************************
+ok: [dvcvisentff-test2.vodacom.vumacam.co.za] => {
+    "msg": "The host is NOT running Ubuntu 20.04. It is running 22.04."
+}
+
+TASK [nvidia : Grab installation variables] ***************************************************************************
+ok: [dvcvisentff-test2.vodacom.vumacam.co.za]
+
+TASK [nvidia : Add NVIDIA GPG apt Key] ********************************************************************************
+fatal: [dvcvisentff-test2.vodacom.vumacam.co.za]: FAILED! => {"changed": false, "module_stderr": "/bin/sh: 1: /usr/bin/python3.10: not found\n", "module_stdout": "", "msg": "The module failed to execute correctly, you probably need to set the interpreter.\nSee stdout/stderr for the exact error", "rc": 127}
+        to retry, use: --limit @/home/darren.lavery@vumacam.co.za/.ansible-retry/ubuntu_upgrade.retry
+
+PLAY RECAP ************************************************************************************************************
+dvcvisentff-test2.vodacom.vumacam.co.za : ok=16   changed=3    unreachable=0    failed=1    skipped=4    rescued=0    ignored=0   
+
+PLAY [Check Ubuntu Version] *******************************************************************************************
+
+TASK [Gathering Facts] ************************************************************************************************
+[WARNING]: Platform linux on host dvcvisentff-test2.vodacom.vumacam.co.za is using the discovered Python interpreter
+at /usr/bin/python3.12, but future installation of another Python interpreter could change the meaning of that path.
+See https://docs.ansible.com/ansible-core/2.17/reference_appendices/interpreter_discovery.html for more information.
+ok: [dvcvisentff-test2.vodacom.vumacam.co.za]
+
+TASK [ubuntu_upgrade : Gracefully stop containers] ********************************************************************
+changed: [dvcvisentff-test2.vodacom.vumacam.co.za]
+
+TASK [ubuntu_upgrade : Print output of Docker down command] ***********************************************************
+ok: [dvcvisentff-test2.vodacom.vumacam.co.za] => {
+    "stop_result": {
+        "changed": true,
+        "cmd": [
+            "docker",
+            "compose",
+            "-f",
+            "/usr/local/vumacam/docker/isentry/docker-compose.yaml",
+            "down"
+        ],
+        "delta": "0:00:00.510228",
+        "end": "2024-11-07 12:56:57.350068",
+        "failed": false,
+        "msg": "",
+        "rc": 0,
+        "start": "2024-11-07 12:56:56.839840",
+        "stderr": "time=\"2024-11-07T12:56:57+02:00\" level=warning msg=\"/usr/local/vumacam/docker/isentry/docker-compose.yaml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion\"",
+        "stderr_lines": [
+            "time=\"2024-11-07T12:56:57+02:00\" level=warning msg=\"/usr/local/vumacam/docker/isentry/docker-compose.yaml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion\""
+        ],
+        "stdout": "",
+        "stdout_lines": []
+    }
+}
+
+TASK [ubuntu_upgrade : Purge specific NVIDIA driver packages] *********************************************************
+changed: [dvcvisentff-test2.vodacom.vumacam.co.za]
+
+TASK [ubuntu_upgrade : Update all packages to their latest version] ***************************************************
+ok: [dvcvisentff-test2.vodacom.vumacam.co.za]
+
+TASK [ubuntu_upgrade : Upgrade the OS (apt-get dist-upgrade)] *********************************************************
+ok: [dvcvisentff-test2.vodacom.vumacam.co.za]
+
+TASK [ubuntu_upgrade : Remove dependencies that are no longer required] ***********************************************
+ok: [dvcvisentff-test2.vodacom.vumacam.co.za]
+
+TASK [ubuntu_upgrade : Report if the host is running Ubuntu 22.02] ****************************************************
+ok: [dvcvisentff-test2.vodacom.vumacam.co.za] => {
+    "msg": "The host is NOT running Ubuntu 22.02. It is running 24.04."
+}
+
+TASK [ubuntu_upgrade : Report if the host is not running Ubuntu 20.04] ************************************************
+ok: [dvcvisentff-test2.vodacom.vumacam.co.za] => {
+    "msg": "The host is NOT running Ubuntu 20.04. It is running 24.04."
+}
+
+TASK [ubuntu_upgrade : Report if the host is not running Ubuntu 22.04] ************************************************
+ok: [dvcvisentff-test2.vodacom.vumacam.co.za] => {
+    "msg": "The host is NOT running Ubuntu 22.04. It is running 24.04."
+}
+
+TASK [nvidia : Grab installation variables] ***************************************************************************
+ok: [dvcvisentff-test2.vodacom.vumacam.co.za]
+
+TASK [nvidia : Add NVIDIA GPG apt Key] ********************************************************************************
+ok: [dvcvisentff-test2.vodacom.vumacam.co.za]
+
+TASK [nvidia : Add NVIDIA Repository noble] ***************************************************************************
+ok: [dvcvisentff-test2.vodacom.vumacam.co.za]
+
+TASK [nvidia : Remove legacy NVIDIA Repository noble] *****************************************************************
+ok: [dvcvisentff-test2.vodacom.vumacam.co.za]
+
+TASK [nvidia : Install nVidia Drivers 535] ****************************************************************************
+changed: [dvcvisentff-test2.vodacom.vumacam.co.za]
+
+TASK [nvidia : Install nVidia Docker] *********************************************************************************
+ok: [dvcvisentff-test2.vodacom.vumacam.co.za]
+
+TASK [nvidia : Pin nvidia driver to version 535] **********************************************************************
+changed: [dvcvisentff-test2.vodacom.vumacam.co.za]
+
+RUNNING HANDLER [nvidia : Reboot to apply the Nvidia drivers] *********************************************************
+changed: [dvcvisentff-test2.vodacom.vumacam.co.za]
+
+TASK [nvidia : Wait for the reboot and reconnect] *********************************************************************
+fatal: [dvcvisentff-test2.vodacom.vumacam.co.za]: FAILED! => {"changed": false, "module_stderr": "/bin/sh: 1: /usr/bin/python3.12: not found\n", "module_stdout": "", "msg": "The module failed to execute correctly, you probably need to set the interpreter.\nSee stdout/stderr for the exact error", "rc": 127}
+        to retry, use: --limit @/home/darren.lavery@vumacam.co.za/.ansible-retry/ubuntu_upgrade.retry
+
+PLAY RECAP ************************************************************************************************************
+dvcvisentff-test2.vodacom.vumacam.co.za : ok=18   changed=5    unreachable=0    failed=1    skipped=5    rescued=0    ignored=0   
