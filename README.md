@@ -49,7 +49,7 @@ Here’s an example of how to use this role in a playbook:
 
 ```yaml
 - name: Upgrade Ubuntu Servers
-  hosts: ubuntu
+  hosts: os_Linux
   gather_facts: yes
   roles:
     - role: ubuntu_upgrade
